@@ -4,10 +4,12 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
+    goToSearch,
     gMap
 }
 
 window.searchCord = searchCord;
+window.goToSearch = goToSearch;
 
 const API_KEY = 'AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs'; //TODO: Enter your API Key
 var nextId = 1
@@ -30,7 +32,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
         })
 }
 
-function goTo(map, event) {
+function goTo(event) {
     var placeName = prompt('Location name?')
     let position = event.latLng.toJSON()
     var currPlace = {
@@ -41,6 +43,22 @@ function goTo(map, event) {
         createdAt: Date.now()
     }
     locService.pushLocation(currPlace)
+    addMarker(position)
+
+}
+function goToSearch(name, lat, lng) {
+    var currPlace = {
+        id: nextId++,
+        name: name,
+        lat: lat,
+        lng: lng,
+        createdAt: Date.now()
+    }
+    locService.pushLocation(currPlace)
+    var position = {
+        lat: lat,
+        lng: lng,
+    }
     addMarker(position)
 
 }
@@ -76,7 +94,7 @@ function _connectGoogleApi() {
 
 function searchCord(value) {
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`).then(res => res.data)
-        .then((loc) => console.log(loc.results[0].geometry.location))
+        .then((loc) => (loc.results[0].geometry.location))
 
 
 }

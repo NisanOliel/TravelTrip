@@ -102,6 +102,7 @@ function onSearch(ev) {
     ev.preventDefault()
     var elSearch = document.querySelector('[name=search]')
     var value = elSearch.value
-    searchCord(value)
+    var x = searchCord(value)
+    x.then((res) => (goTo(res.lat, res.lng), mapService.goToSearch(value, res.lat, res.lng))).then(onGetLocs)
 
 }
