@@ -1,9 +1,12 @@
 export const locService = {
     getLocs,
-    pushLocation
+    pushLocation,
+    removeLoc
 }
 
 import { storageService } from './storage-service.js'
+window.removeLoc = removeLoc;
+
 
 const Location_Key = 'locationDB'
 const locs = storageService.loadFromStorage(Location_Key) || []
@@ -19,8 +22,16 @@ function getLocs() {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(locs);
-        }, 2000)
+        }, 500)
     });
+
 }
 
+function removeLoc(idx) {
+    console.log(idx);
+    locs.splice(idx, 1)
+    storageService.saveToStorage(Location_Key, locs)
+
+
+}
 

@@ -6,6 +6,8 @@ window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
+window.goTo = goTo;
+window.onRemoveLoc = onRemoveLoc;
 
 function onInit() {
     mapService.initMap()
@@ -32,7 +34,21 @@ function onGetLocs() {
     locService.getLocs()
         .then(locs => {
             console.log('Locations:', locs)
-            document.querySelector('.locs').innerText = JSON.stringify(locs)
+            // document.querySelector('.locs').innerText = JSON.stringify(locs)
+            var strHtml = locs.map((loc, idx) => {
+                console.log('loc:', loc)
+
+                return `  <tr>
+                <td>${loc.id}</td>
+                <td>${loc.name}</td>
+                <td>${loc.lat}</td>
+                <td>${loc.lng}</td>
+                <td>${loc.createdAt}</td>
+                <td><button onclick="goTo(${loc.lat},${loc.lng})">go</button></td>
+                <td><button onclick="onRemoveLoc(${idx})">X</button></td>
+            </tr>`
+            })
+            document.querySelector('.tbody-location').innerHTML = strHtml.join('')
         })
 }
 
@@ -51,3 +67,13 @@ function onPanTo() {
     console.log('Panning the Map');
     mapService.panTo(35.6895, 139.6917);
 }
+function goTo(lat, lng) {
+    mapService.panTo(lat, lng)
+}
+
+function onRemoveLoc(idx) {
+    locService.removeLoc(idx)
+    onGetLocs()
+
+}
+
