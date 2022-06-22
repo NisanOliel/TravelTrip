@@ -50,8 +50,8 @@ function onGetLocs() {
                 <td>${loc.lat}</td>
                 <td>${loc.lng}</td>
                 <td>${loc.createdAt}</td>
-                <td><button onclick="goToPlace(${loc.lat},${loc.lng})">go</button></td>
-                <td><button onclick="onRemoveLoc(${idx})">X</button></td>
+                <td><button class="btn btn-success" onclick="goToPlace(${loc.lat},${loc.lng})">go</button></td>
+                <td><button class="btn btn-danger" onclick="onRemoveLoc(${idx})">X</button></td>
             </tr>`
             })
             document.querySelector('.tbody-location').innerHTML = strHtml.join('')
@@ -62,6 +62,7 @@ function onGetUserPos() {
     getPosition()
         .then(pos => {
             console.log('User position is:', pos.coords);
+            document.querySelector('.userPos').classList.remove('hide')
             document.querySelector('.user-pos').innerText =
                 `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
             goToPlace(pos.coords.latitude, pos.coords.longitude)
