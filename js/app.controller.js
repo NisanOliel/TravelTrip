@@ -8,6 +8,7 @@ window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
 window.goTo = goTo;
 window.onRemoveLoc = onRemoveLoc;
+window.setUserLocation = setUserLocation;
 
 function onInit() {
     mapService.initMap()
@@ -77,3 +78,21 @@ function onRemoveLoc(idx) {
 
 }
 
+function setUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(centerMapOnUser)
+    } else {
+        console.log('Geolocation is not supported by this browser.')
+    }
+}
+
+function centerMapOnUser(position) {
+    const center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+    }
+
+    console.log('Centering on', center)
+    mapService.panTo(center.lat, center.lng)
+    mapService.addMarker({ lat: center.lat, lng: center.lng })
+}

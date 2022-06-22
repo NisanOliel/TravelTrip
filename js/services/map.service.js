@@ -3,7 +3,8 @@ import { locService } from './loc.service.js'
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    gMap
 }
 
 
