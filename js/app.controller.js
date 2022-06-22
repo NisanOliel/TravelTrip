@@ -6,15 +6,19 @@ window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
-window.goTo = goTo;
+window.goToPlace = goToPlace;
 window.onRemoveLoc = onRemoveLoc;
 window.setUserLocation = setUserLocation;
 window.onSearch = onSearch;
+window.getParams = getParams;
+window.renderFilterByQueryStringParams = renderFilterByQueryStringParams;
+
 
 function onInit() {
     mapService.initMap()
         .then(() => {
             console.log('Map is ready');
+            renderFilterByQueryStringParams()
         })
         .catch(() => console.log('Error: cannot init map'));
 }
@@ -46,7 +50,7 @@ function onGetLocs() {
                 <td>${loc.lat}</td>
                 <td>${loc.lng}</td>
                 <td>${loc.createdAt}</td>
-                <td><button onclick="goTo(${loc.lat},${loc.lng})">go</button></td>
+                <td><button onclick="goToPlace(${loc.lat},${loc.lng})">go</button></td>
                 <td><button onclick="onRemoveLoc(${idx})">X</button></td>
             </tr>`
             })
@@ -60,6 +64,9 @@ function onGetUserPos() {
             console.log('User position is:', pos.coords);
             document.querySelector('.user-pos').innerText =
                 `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+            goToPlace(pos.coords.latitude, pos.coords.longitude)
+            mapService.addMarker({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+
         })
         .catch(err => {
             console.log('err!!!', err);
@@ -69,7 +76,7 @@ function onPanTo() {
     console.log('Panning the Map');
     mapService.panTo(35.6895, 139.6917);
 }
-function goTo(lat, lng) {
+function goToPlace(lat, lng) {
     mapService.panTo(lat, lng)
 }
 
@@ -102,7 +109,33 @@ function onSearch(ev) {
     ev.preventDefault()
     var elSearch = document.querySelector('[name=search]')
     var value = elSearch.value
-    var x = searchCord(value)
-    x.then((res) => (goTo(res.lat, res.lng), mapService.goToSearch(value, res.lat, res.lng))).then(onGetLocs)
+    searchCord(value)
+        .then((res) => (goToPlace(res.lat, res.lng),
+            mapService.goToSearch(value, res.lat, res.lng)))
+        .then(onGetLocs).then(getParams(value))
 
+}
+
+function getParams(value) {
+    const queryStringParams = `?location=${value}`
+    const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + queryStringParams
+    window.history.pushState({ path: newUrl }, '', newUrl)
+}
+
+
+function renderFilterByQueryStringParams() {
+    // Retrieve data from the current query-params
+    const queryStringParams = new URLSearchParams(window.location.search)
+
+    const filterBy = {
+        location: queryStringParams.get('location') || '',
+    }
+
+    if (!filterBy.location) return
+
+    document.querySelector('[name=search]').value = filterBy.location
+    searchCord(filterBy.location)
+        .then((res) => (goToPlace(res.lat, res.lng),
+            mapService.goToSearch(filterBy.location, res.lat, res.lng)))
+        .then(onGetLocs).then(getParams(filterBy.location))
 }

@@ -26,15 +26,25 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 zoom: 15
             })
             console.log('Map!', gMap);
-            gMap.addListener('click', mapMouseEvent => {
-                goTo(gMap, mapMouseEvent)
-            })
+            addMapLisner()
+
+
         })
 }
+function addMapLisner() {
+    gMap.addListener('click', (mapMouseEvent) => {
+        let lat = mapMouseEvent.latLng.lat()
+        let lng = mapMouseEvent.latLng.lng()
+        let position = {
+            lat,
+            lng
+        }
+        goTo(position)
+    })
+}
 
-function goTo(event) {
+function goTo(position) {
     var placeName = prompt('Location name?')
-    let position = event.latLng.toJSON()
     var currPlace = {
         id: nextId++,
         name: placeName,
@@ -93,7 +103,8 @@ function _connectGoogleApi() {
 }
 
 function searchCord(value) {
-    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`).then(res => res.data)
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`)
+        .then(res => res.data)
         .then((loc) => (loc.results[0].geometry.location))
 
 
