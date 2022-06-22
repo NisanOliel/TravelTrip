@@ -9,6 +9,7 @@ window.onGetUserPos = onGetUserPos;
 window.goTo = goTo;
 window.onRemoveLoc = onRemoveLoc;
 window.setUserLocation = setUserLocation;
+window.onSearch = onSearch;
 
 function onInit() {
     mapService.initMap()
@@ -95,4 +96,12 @@ function centerMapOnUser(position) {
     console.log('Centering on', center)
     mapService.panTo(center.lat, center.lng)
     mapService.addMarker({ lat: center.lat, lng: center.lng })
+}
+
+function onSearch(ev) {
+    ev.preventDefault()
+    var elSearch = document.querySelector('[name=search]')
+    var value = elSearch.value
+    searchCord(value)
+
 }

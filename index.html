@@ -15,6 +15,21 @@
     <button onclick="onGetLocs()" class="btn-get-locs">Get Locations</button>
     <button onclick="onPanTo()" class="btn-pan">Pan Map to Tokyo</button>
     <button onclick="setUserLocation()" class="btn-pan">use location</button>
+    <!-- <form action="
+    <input onsubmit=" onSearch(this.value)" type="text" placeholder="enter city here.." name="input-place">
+        <button type="submit">search</button>
+
+    </form> -->
+
+    <!-- <form onsubmit="onSearch(event)">
+        Enter name: <input name="input-search" type="text">
+        <input type="submit">
+    </form> -->
+    <form onsubmit="onSearch(event)">
+
+        <label for="search">search</label>
+        <input type="search" id="search" name="search" />
+    </form>
 
     <p>You are at: <span class="user-pos"></span></p>
     <p>Locations: <span class="locs"></span></p>
@@ -33,7 +48,7 @@
         </tbody>
     </table>
 
-
+    <script src="lib/axios.js"></script>
     <script type="module" src="js/app.controller.js"></script>
 </body>
 

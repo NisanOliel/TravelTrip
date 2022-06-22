@@ -7,7 +7,9 @@ export const mapService = {
     gMap
 }
 
+window.searchCord = searchCord;
 
+const API_KEY = 'AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs'; //TODO: Enter your API Key
 var nextId = 1
 var gMap;
 
@@ -61,14 +63,21 @@ function panTo(lat, lng) {
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
-    const API_KEY = 'AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs'; //TODO: Enter your API Key
+
     var elGoogleApi = document.createElement('script');
     elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
     elGoogleApi.async = true;
     document.body.append(elGoogleApi);
-
     return new Promise((resolve, reject) => {
         elGoogleApi.onload = resolve;
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
+
+function searchCord(value) {
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`).then(res => res.data)
+        .then((loc) => console.log(loc.results[0].geometry.location))
+
+
+}
+
