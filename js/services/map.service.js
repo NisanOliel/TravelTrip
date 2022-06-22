@@ -50,7 +50,7 @@ function goTo(position) {
         name: placeName,
         lat: position.lat,
         lng: position.lng,
-        createdAt: Date.now()
+        createdAt: new Date()
     }
     locService.pushLocation(currPlace)
     addMarker(position)
@@ -62,7 +62,7 @@ function goToSearch(name, lat, lng) {
         name: name,
         lat: lat,
         lng: lng,
-        createdAt: Date.now()
+        createdAt: new Date()
     }
     locService.pushLocation(currPlace)
     var position = {
