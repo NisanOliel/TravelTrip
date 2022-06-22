@@ -1,12 +1,19 @@
 export const locService = {
-    getLocs
+    getLocs,
+    pushLocation
 }
 
+import { storageService } from './storage-service.js'
 
-const locs = [
-    { name: 'Greatplace', lat: 32.047104, lng: 34.832384 }, 
-    { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
-]
+const Location_Key = 'locationDB'
+const locs = storageService.loadFromStorage(Location_Key) || []
+
+
+function pushLocation(location) {
+    locs.push(location)
+    storageService.saveToStorage(Location_Key, locs)
+
+}
 
 function getLocs() {
     return new Promise((resolve, reject) => {

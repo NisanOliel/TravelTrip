@@ -1,9 +1,13 @@
+import { locService } from './loc.service.js'
+
 export const mapService = {
     initMap,
     addMarker,
     panTo
 }
 
+
+var nextId = 1
 var gMap;
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
@@ -13,9 +17,9 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
             console.log('google available');
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                    center: { lat, lng },
-                    zoom: 15
-                })
+                center: { lat, lng },
+                zoom: 15
+            })
             console.log('Map!', gMap);
             gMap.addListener('click', mapMouseEvent => {
                 goTo(gMap, mapMouseEvent)
@@ -24,8 +28,18 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 }
 
 function goTo(map, event) {
+    var placeName = prompt('Location name?')
     let position = event.latLng.toJSON()
+    var currPlace = {
+        id: nextId++,
+        name: placeName,
+        lat: position.lat,
+        lng: position.lng,
+        createdAt: Date.now()
+    }
+    locService.pushLocation(currPlace)
     addMarker(position)
+
 }
 
 function addMarker(loc) {
