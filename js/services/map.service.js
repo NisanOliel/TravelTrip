@@ -1,4 +1,5 @@
 import { locService } from './loc.service.js'
+import { utilService } from './util.service.js'
 
 export const mapService = {
     initMap,
@@ -12,7 +13,6 @@ window.searchCord = searchCord;
 window.goToSearch = goToSearch;
 
 const API_KEY = 'AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs'; //TODO: Enter your API Key
-var nextId = 1
 var gMap;
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
@@ -46,7 +46,7 @@ function addMapLisner() {
 function goTo(position) {
     var placeName = prompt('Location name?')
     var currPlace = {
-        id: nextId++,
+        id: utilService.makeId(),
         name: placeName,
         lat: position.lat,
         lng: position.lng,
@@ -58,7 +58,7 @@ function goTo(position) {
 }
 function goToSearch(name, lat, lng) {
     var currPlace = {
-        id: nextId++,
+        id: utilService.makeId(),
         name: name,
         lat: lat,
         lng: lng,
