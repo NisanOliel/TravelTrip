@@ -6,14 +6,19 @@ export const mapService = {
     addMarker,
     panTo,
     goToSearch,
+    searchCord,
+    showMarkers,
+    deleteMarkers,
     gMap
 }
 
 window.searchCord = searchCord;
 window.goToSearch = goToSearch;
 
-const API_KEY = 'AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs'; //TODO: Enter your API Key
+const API_KEY = 'AIzaSyAycOKOPfK6ERzlwmWSkUnoBhNqR8Z9UCE'; //TODO: Enter your API Key
 var gMap;
+var gMarkers = []
+
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('InitMap');
@@ -53,7 +58,7 @@ function goTo(position) {
         createdAt: new Date()
     }
     locService.pushLocation(currPlace)
-    addMarker(position)
+    addMarker(position, placeName)
 
 }
 function goToSearch(name, lat, lng) {
@@ -69,16 +74,21 @@ function goToSearch(name, lat, lng) {
         lat: lat,
         lng: lng,
     }
-    addMarker(position)
+    addMarker(position, name)
 
 }
 
-function addMarker(loc) {
+function addMarker(loc, name = "place") {
+    const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        title: 'Hello World!'
+        title: name,
+        icon: image
+
     });
+    gMarkers.push(marker)
     return marker;
 }
 
@@ -87,6 +97,16 @@ function panTo(lat, lng) {
     gMap.panTo(laLatLng);
 }
 
+function showMarkers(locs) {
+    locs.forEach(({ lat, lng, name }) => {
+        addMarker({ lat, lng }, name)
+    })
+}
+
+function deleteMarkers() {
+    gMarkers.forEach(marker => marker.setMap(null))
+    gMarkers = []
+}
 
 
 function _connectGoogleApi() {
@@ -104,9 +124,6 @@ function _connectGoogleApi() {
 
 function searchCord(value) {
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`)
-        .then(res => res.data)
-        .then((loc) => (loc.results[0].geometry.location))
-
-
+        .then(({ data }) => data.results[0].geometry.location)
 }
 

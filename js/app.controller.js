@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { apiService } from './services/api.service.js'
 
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
@@ -12,6 +13,7 @@ window.setUserLocation = setUserLocation;
 window.onSearch = onSearch;
 window.getParams = getParams;
 window.renderFilterByQueryStringParams = renderFilterByQueryStringParams;
+window.copyUrlToClipboard = copyUrlToClipboard;
 
 
 function onInit() {
@@ -54,8 +56,19 @@ function onGetLocs() {
                 <td><button class="btn btn-danger" onclick="onRemoveLoc(${idx})">X</button></td>
             </tr>`
             })
+            mapService.deleteMarkers()
+            mapService.showMarkers(locs)
             document.querySelector('.tbody-location').innerHTML = strHtml.join('')
         })
+}
+function renderWeather(coord) {
+    apiService.getWeather(coord).then(data => {
+        // console.log('data', data)
+        const strHtmls = data.map((item) => `<li>${item}</li>`)
+
+        const elWeatherList = document.querySelector('.weather-list')
+        elWeatherList.innerHTML = strHtmls.join('')
+    })
 }
 
 function onGetUserPos() {
@@ -74,11 +87,13 @@ function onGetUserPos() {
         })
 }
 function onPanTo() {
-    console.log('Panning the Map');
     mapService.panTo(35.6895, 139.6917);
+
 }
 function goToPlace(lat, lng) {
     mapService.panTo(lat, lng)
+    renderWeather({ lat, lng })
+
 }
 
 function onRemoveLoc(idx) {
@@ -110,9 +125,13 @@ function onSearch(ev) {
     ev.preventDefault()
     var elSearch = document.querySelector('[name=search]')
     var value = elSearch.value
-    searchCord(value)
-        .then((res) => (goToPlace(res.lat, res.lng),
-            mapService.goToSearch(value, res.lat, res.lng)))
+    mapService.searchCord(value)
+        .then(({ lat, lng }) => {
+            goToPlace(lat, lng)
+            mapService.goToSearch(value, lat, lng)
+            //TODO: Add render weather here
+            renderWeather({ lat, lng })
+        })
         .then(onGetLocs).then(getParams(value))
 
 }
@@ -123,6 +142,10 @@ function getParams(value) {
     window.history.pushState({ path: newUrl }, '', newUrl)
 }
 
+function copyUrlToClipboard() {
+    const url = window.location.href
+    navigator.clipboard.writeText(url)
+}
 
 function renderFilterByQueryStringParams() {
     // Retrieve data from the current query-params
@@ -135,8 +158,9 @@ function renderFilterByQueryStringParams() {
     if (!filterBy.location) return
 
     document.querySelector('[name=search]').value = filterBy.location
-    searchCord(filterBy.location)
-        .then((res) => (goToPlace(res.lat, res.lng),
-            mapService.goToSearch(filterBy.location, res.lat, res.lng)))
+    mapService.searchCord(filterBy.location)
+        .then(({ lat, lng }) => {
+            goToPlace(lat, lng)
+        })
         .then(onGetLocs).then(getParams(filterBy.location))
 }

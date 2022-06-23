@@ -62,3 +62,8 @@ table {
 .hide {
     display: none;
 }
+
+
+.clean-list {
+    list-style-type: none;
+}

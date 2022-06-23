@@ -18,11 +18,13 @@
     <div id="map" style="width: 70%; height: 450px;"></div>
     <div class="btn-user">
 
-        <button onclick="onAddMarker()" class=" btn btn-primary">Add Marker Speific Location</button>
+        <!-- <button onclick="onAddMarker()" class=" btn btn-primary">Add Marker Speific Location</button> -->
         <button onclick=" onGetUserPos()" class=" btn btn-primary">Get User Position</button>
         <button onclick=" onGetLocs()" class=" btn btn-primary">Get Locations</button>
-        <button onclick=" onPanTo()" class=" btn btn-primary">Pan Map to Tokyo</button>
+        <!-- <button onclick=" onPanTo()" class=" btn btn-primary">Pan Map to Tokyo</button> -->
+        <button onclick="copyUrlToClipboard()" class="btn btn-warning"> Copy To Clipboard</button>
         <!-- <button onclick=" setUserLocation()" class="btn">use location</button> -->
+    </div>
     </div>
 
     <form onsubmit="onSearch(event)">
@@ -55,6 +57,11 @@
 
         </tbody>
     </table>
+    <!-- For the weather bonus -->
+    <section class="weather-preview">
+        <h1 class="u">Weather</h1>
+        <ul class="clean-list weather-list"></ul>
+    </section>
 
     <script src="lib/axios.js"></script>
     <script type="module" src="js/app.controller.js"></script>
