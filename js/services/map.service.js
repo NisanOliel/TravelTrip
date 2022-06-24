@@ -1,5 +1,6 @@
 import { locService } from './loc.service.js'
 import { utilService } from './util.service.js'
+import { map } from './api-key.js'
 
 export const mapService = {
     initMap,
@@ -15,22 +16,18 @@ export const mapService = {
 window.searchCord = searchCord;
 window.goToSearch = goToSearch;
 
-const API_KEY = 'AIzaSyAycOKOPfK6ERzlwmWSkUnoBhNqR8Z9UCE'; //TODO: Enter your API Key
 var gMap;
 var gMarkers = []
 
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
-            console.log('google available');
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
                 center: { lat, lng },
                 zoom: 15
             })
-            console.log('Map!', gMap);
             addMapLisner()
 
 
@@ -113,7 +110,7 @@ function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
 
     var elGoogleApi = document.createElement('script');
-    elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
+    elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${map.API_KEY}`;
     elGoogleApi.async = true;
     document.body.append(elGoogleApi);
     return new Promise((resolve, reject) => {
@@ -123,7 +120,7 @@ function _connectGoogleApi() {
 }
 
 function searchCord(value) {
-    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=AIzaSyC4CCroXerY3okRnhMxHHcufHQAiIRSzZs`)
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${value}&key=${map.API_KEY}`)
         .then(({ data }) => data.results[0].geometry.location)
 }
 

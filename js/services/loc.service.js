@@ -28,7 +28,6 @@ function getLocs() {
 }
 
 function removeLoc(idx) {
-    console.log(idx);
     locs.splice(idx, 1)
     storageService.saveToStorage(Location_Key, locs)
 

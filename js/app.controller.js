@@ -19,7 +19,6 @@ window.copyUrlToClipboard = copyUrlToClipboard;
 function onInit() {
     mapService.initMap()
         .then(() => {
-            console.log('Map is ready');
             renderFilterByQueryStringParams()
         })
         .catch(() => console.log('Error: cannot init map'));
@@ -27,24 +26,20 @@ function onInit() {
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
-    console.log('Getting Pos');
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
 }
 
 function onAddMarker() {
-    console.log('Adding a marker');
     mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
 }
 
 function onGetLocs() {
     locService.getLocs()
         .then(locs => {
-            console.log('Locations:', locs)
             // document.querySelector('.locs').innerText = JSON.stringify(locs)
             var strHtml = locs.map((loc, idx) => {
-                console.log('loc:', loc)
 
                 return `  <tr>
                 <td>${loc.id}</td>
@@ -63,7 +58,6 @@ function onGetLocs() {
 }
 function renderWeather(coord) {
     apiService.getWeather(coord).then(data => {
-        // console.log('data', data)
         const strHtmls = data.map((item) => `<li>${item}</li>`)
 
         const elWeatherList = document.querySelector('.weather-list')
